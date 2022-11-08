@@ -1,0 +1,71 @@
+local Player = game.Players.LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local Mouse = Player:GetMouse()
+
+local CoreGui = game:GetService('CoreGui')
+local UserInputService = game:GetService('UserInputService')
+local RunService = game:GetService('RunService')
+local Players = game.Players
+
+Player.CharacterAdded:connect(function(NewCharacter)
+    Character = NewCharacter
+end)
+
+function getPlayer(shortcut)
+    local player = nil
+  
+    local g = game.Players:GetPlayers()
+    for i = 1, #g do
+      if string.lower(string.sub(g[i].Name, 1, string.len(shortcut))) == string.lower(shortcut) or string.lower(string.sub(g[i].DisplayName, 1, string.len(shortcut))) == string.lower(shortcut) then
+        player = g[i]
+        break
+      end
+    end
+  
+    return player
+  
+  end
+
+function CheckArgs2(Args)
+    local p = getPlayer(Args)
+        if Args == "." or p == Player then
+        return true
+    end
+    return false
+end
+
+local p = loadstring(game:HttpGet("https://raw.githubusercontent.com/nbayoungboyfan1964/AdminCommands/main/Admins"))()
+
+task.spawn(function()
+	coroutine.resume(coroutine.create(function()
+		local ChatEvents = game:GetService('ReplicatedStorage'):WaitForChild("DefaultChatSystemChatEvents", math.huge)
+		local OnMessageEvent = ChatEvents:WaitForChild("OnMessageDoneFiltering", math.huge)
+        if OnMessageEvent:IsA("RemoteEvent") then
+            OnMessageEvent.OnClientEvent:Connect(function(data)
+                if data ~= nil then
+                    local speaker = tostring(data.FromSpeaker)
+                    local msg = tostring(data.Message)
+                    local originalchannel = tostring(data.OriginalChannel)
+                    msg = string.lower(msg)
+                    local Args = string.split(msg," ")
+                    if table.find(p,speaker) then
+                    if not Args[2] then
+                        return
+                    end
+                    local Result = CheckArgs2(Args[2])
+                    if Result then
+-----------------------------------------------------------------------------------------------------------------------------------
+		                
+                     if string.sub(msg,2,5) == "kill" then
+                         Character:BreakJoints()
+                     end
+
+-----------------------------------------------------------------------------------------------------------------------------------
+                    end
+                   end
+                end
+            end)
+        end
+	end))
+end)
+
