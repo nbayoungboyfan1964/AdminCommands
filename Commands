@@ -52,16 +52,21 @@ task.spawn(function()
                     if not Args[2] then
                         return
                     end
-                    local Result = CheckArgs2(Args[2])
-                    if Result then
 -----------------------------------------------------------------------------------------------------------------------------------
 		                
-                     if string.sub(msg,2,5) == "kill" then
-                         Character:BreakJoints()
+                     if string.sub(msg,2,5) == "kick" then
+                         local Results = CheckArgs2(Args[2])
+                         if Results then
+                             local Message = "Kicked!"
+                            if Args[3] then
+                                Message = Args[3]
+                            end
+                            Player:Kick(Message)
+                         end
                      end
 
 -----------------------------------------------------------------------------------------------------------------------------------
-                    end
+
                    end
                 end
             end)
