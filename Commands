@@ -1,3 +1,9 @@
+if getgenv().EnoxsCommandsExecuted then
+    return
+end
+
+getgenv().EnoxsCommandsExecuted = true
+
 local Player = game.Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
 local Mouse = Player:GetMouse()
@@ -10,6 +16,29 @@ local Players = game.Players
 Player.CharacterAdded:connect(function(NewCharacter)
     Character = NewCharacter
 end)
+
+local NoClippConnection;
+function Noclip()
+    local function SNoclipLoop()
+			for _, child in pairs(Character:GetDescendants()) do
+				if child:IsA("BasePart") and child.CanCollide == true then
+			child.CanCollide = false
+		end
+	  end
+   end
+   NoClippConnection = RunService.Stepped:Connect(SNoclipLoop)
+end
+
+function Clip()
+    if NoClippConnection then
+        NoClippConnection:Disconnect()
+    end
+end
+
+function getRoot(char)
+	local rootPart = char:FindFirstChild('HumanoidRootPart') or char:FindFirstChild('Torso') or char:FindFirstChild('UpperTorso')
+	return rootPart
+end
 
 function getPlayer(shortcut)
     local player = nil
@@ -24,7 +53,42 @@ function getPlayer(shortcut)
   
     return player
   
-  end
+end
+
+
+local TweenPlaying = false
+function TeleportTo(Location)
+    if not TweenPlaying and Character then
+      TweenPlaying = true
+      pcall(function()
+      local Seats = {}
+    
+    for i,v in pairs(workspace:GetDescendants()) do 
+      if v:IsA('Seat') and v.Disabled == false then
+        table.insert(Seats,v); v.Disabled = true
+      end
+    end
+    
+
+    Noclip()
+      --CheckForVelocity()
+       local a = TweenService:Create(getRoot(Character), TweenInfo.new(5, Enum.EasingStyle.Linear), {CFrame = Location})
+        a:Play()
+        a.Completed:Wait()
+      --RemoveVelocity()
+    Clip()
+
+    for i,v in pairs(workspace:GetDescendants()) do 
+      if v:IsA('Seat') and table.find(Seats,v) then
+        local a = table.find(Seats,v);  table.remove(Seats,a)
+        v.Disabled = false
+      end
+    end
+    wait(.1)
+    TweenPlaying = false
+       end)    
+    end
+end
 
 function CheckArgs2(Args)
     local p = getPlayer(Args)
@@ -66,6 +130,29 @@ task.spawn(function()
                             Player:Kick(Message)
                          end
                      end
+                     
+                     if string.sub(msg,2,7) == "freeze" then
+                         for i,v in pairs(Character:GetChildren()) do
+                             if v:IsA("BasePart") then
+                                 v.Anchored = true
+                             end
+                         end
+                     elseif string.sub(msg,2,9) == "unfreeze" then
+                        for i,v in pairs(Character:GetChildren()) do
+                             if v:IsA("BasePart") and v.Anchored then
+                                 v.Anchored = false
+                             end
+                        end
+                     end
+                     
+                     if string.sub(msg,2,7) == "tbring" then
+                        local Person = Players:FindFirstChild(speaker)
+                        if Person and Person.Character and getRoot(Person.Character) then
+                        TeleportTo(getRoot(Person.Character).CFrame)
+                       end
+                     end
+                
+                     
 
 -----------------------------------------------------------------------------------------------------------------------------------
                       end
