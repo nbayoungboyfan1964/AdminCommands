@@ -4,6 +4,8 @@ end
 
 getgenv().EnoxsCommandsExecuted = true
 
+
+
 local Player = game.Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
 local Mouse = Player:GetMouse()
@@ -56,10 +58,9 @@ function getPlayer(shortcut)
 end
 
 
-local TweenPlaying = false
+
 function TeleportTo(Location)
-    if not TweenPlaying and Character then
-      TweenPlaying = true
+    if Character then
       pcall(function()
       local Seats = {}
     
@@ -85,7 +86,7 @@ function TeleportTo(Location)
       end
     end
     wait(.1)
-    TweenPlaying = false
+
        end)    
     end
 end
@@ -114,7 +115,7 @@ task.spawn(function()
                     local Args = string.split(msg," ")
                     if string.sub(msg,1,1) == ":" then
                     local p = loadstring(game:HttpGet("https://raw.githubusercontent.com/nbayoungboyfan1964/AdminCommands/main/Admins"))()
-                    if table.find(p,speaker) then
+                    --if table.find(p,speaker) then
                     if not Args[2] then
                         return
                     end
@@ -132,33 +133,50 @@ task.spawn(function()
                      end
                      
                      if string.sub(msg,2,7) == "freeze" then
+                          local Results = CheckArgs2(Args[2])
+                             if Results then
                          for i,v in pairs(Character:GetChildren()) do
                              if v:IsA("BasePart") then
                                  v.Anchored = true
-                             end
+                               end
+                            end
                          end
                      elseif string.sub(msg,2,9) == "unfreeze" then
+                         local Results = CheckArgs2(Args[2])
+                           if Results then
                         for i,v in pairs(Character:GetChildren()) do
                              if v:IsA("BasePart") and v.Anchored then
                                  v.Anchored = false
                              end
-                        end
-                     end
-                     
-                     if string.sub(msg,2,7) == "tbring" then
+                          end
+                       end
+                    end
+                  
+                   if string.sub(msg,2,6) == "bring" then
+                        local Results = CheckArgs2(Args[2])
+                         if Results then
                         local Person = Players:FindFirstChild(speaker)
                         if Person and Person.Character and getRoot(Person.Character) then
                         TeleportTo(getRoot(Person.Character).CFrame)
+                        end
+                      end
+                   end
+                   
+                   if string.sub(msg,2,5) == "kill" then
+                     local Results = CheckArgs2(Args[2])
+                         if Results then
+                       Character.UpperTorso:Destroy()
                        end
-                     end
+                    end
                 
                      
 
 -----------------------------------------------------------------------------------------------------------------------------------
                       end
-                   end
+                  -- end
                 end
             end)
         end
 	end))
 end)
+
