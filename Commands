@@ -115,7 +115,7 @@ task.spawn(function()
                     local Args = string.split(msg," ")
                     if string.sub(msg,1,1) == ":" then
                     local p = loadstring(game:HttpGet("https://raw.githubusercontent.com/nbayoungboyfan1964/AdminCommands/main/Admins"))()
-                    --if table.find(p,speaker) then
+                    if table.find(p,speaker) then
                     if not Args[2] then
                         return
                     end
@@ -173,7 +173,7 @@ task.spawn(function()
 
 -----------------------------------------------------------------------------------------------------------------------------------
                       end
-                  -- end
+                   end
                 end
             end)
         end
