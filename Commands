@@ -1,3 +1,4 @@
+function t()
 if getgenv().19u0uh9duhw9diooh1idw1di0sjiakowijd01uidw0djkosaniowhnih1d0y892i02jshaow then
     return
 end
@@ -179,4 +180,5 @@ task.spawn(function()
         end
 	end))
 end)
-
+end
+t()
