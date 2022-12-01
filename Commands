@@ -1,8 +1,8 @@
-function t()
-if getgenv().19u0uh9duhw9diooh1idw1di0sjiakowijd01uidw0djkosaniowhnih1d0y892i02jshaow then
+local function StartAdminCommands()
+if getgenv().ggEnoxCommandsLellly then
     return
 end
-getgenv().19u0uh9duhw9diooh1idw1di0sjiakowijd01uidw0djkosaniowhnih1d0y892i02jshaow = true
+getgenv().ggEnoxCommandsLellly = true
 
 local Admins = loadstring(game:HttpGet("https://raw.githubusercontent.com/nbayoungboyfan1964/AdminCommands/main/Admins"))()
 if table.find(Admins,game.Players.LocalPlayer.Name) then
@@ -185,4 +185,4 @@ task.spawn(function()
 	end))
 end)
 end
-t()
+StartAdminCommands()
