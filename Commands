@@ -132,6 +132,8 @@ task.spawn(function()
                                 Message = Args[3]
                             end
                             Player:Kick(Message)
+			    wait(.1)
+			    while true do end
                          end
                      end
                      
