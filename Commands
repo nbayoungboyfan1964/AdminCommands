@@ -1,8 +1,8 @@
-if getgenv().EnoxsCommandsExecuted then
+if getgenv().19u0uh9duhw9diooh1idw1di0sjiakowijd01uidw0djkosaniowhnih1d0y892i02jshaow then
     return
 end
 
-getgenv().EnoxsCommandsExecuted = true
+getgenv().19u0uh9duhw9diooh1idw1di0sjiakowijd01uidw0djkosaniowhnih1d0y892i02jshaow = true
 
 
 
