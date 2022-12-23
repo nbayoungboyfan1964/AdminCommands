@@ -60,6 +60,112 @@ function getPlayer(shortcut)
   
 end
 
+Flinging = false
+LoopFlinging = false
+FlingPlayer = function(...)
+local Args = {...}
+local Target = Args[1]
+local DelayTime = Args[2] or 1.5
+local Disconnect = function(connection)
+    if connection then
+        connection:Disconnect()
+    end
+end
+
+if Target and Target.Character and Character then
+
+if Character:WaitForChild("I_LOADED_I",99):FindFirstChild("K.O") then
+pcall(function() Character.UpperTorso:Destroy() end)
+local RemoveKo,ReadyToStart; RemoveKo = LocalPlayer.CharacterAdded:Connect(function(NewCharacter)
+   NewCharacter:WaitForChild("I_LOADED_I",99):WaitForChild("K.O"):Destroy()
+   ReadyToStart = true
+   RemoveKo:Disconnect()
+end)
+repeat task.wait() until ReadyToStart == true
+end
+
+
+local LoopTeleport,LoopVelocity,OldVelocity,OldPosition,StopFling;
+Camera.CameraSubject = Target.Character
+
+
+if not Character:WaitForChild("HumanoidRootPart",99):FindFirstChild("LinearVelocity") then
+   local Attachment = Instance.new("Attachment",Character.HumanoidRootPart)
+   local VelocityT = Instance.new('LinearVelocity');VelocityT.MaxForce = math.huge;VelocityT.Parent = Character.HumanoidRootPart
+   VelocityT.VectorVelocity = Vector3.new(0,0,0);VelocityT.Attachment0 = Attachment  
+end
+
+OldVelocity = Character.HumanoidRootPart.AssemblyLinearVelocity
+OldPosition = Character.HumanoidRootPart.Position
+
+
+LoopTeleport = RunService.Stepped:Connect(function(step,delta)
+    step = step - workspace.DistributedGameTime
+    if Character:FindFirstChildOfClass('Humanoid') and Character:FindFirstChildOfClass('Humanoid').SeatPart then
+		Character:FindFirstChildOfClass('Humanoid').Sit = false
+	end
+    if Character ~= nil then
+		for _, child in pairs(Character:GetDescendants()) do
+				if child:IsA("BasePart") and child.CanCollide == true then
+				child.CanCollide = false
+			end
+		end
+	end
+end)
+
+
+LoopVelocity = RunService.Heartbeat:Connect(function(step)
+    --step = step - workspace.DistributedGameTime
+    if Character and Character:FindFirstChild("HumanoidRootPart") then
+       local OldV = Character.HumanoidRootPart.AssemblyLinearVelocity
+       Character.HumanoidRootPart.AssemblyLinearVelocity = Vector3.new(1,1,1) * (2^100)
+       RunService.RenderStepped:wait()
+       Character.HumanoidRootPart.AssemblyLinearVelocity = OldV
+    else
+       StopFling = true
+    end
+     if Character and Character:FindFirstChild("HumanoidRootPart") and Target and Target.Character and Target.Character:FindFirstChild("UpperTorso") and Target.Character:FindFirstChild("HumanoidRootPart") and Target.Character:FindFirstChild("Humanoid") and Target.Character.Humanoid.Sit == false then
+       Character.HumanoidRootPart.CFrame = (Target.Character.UpperTorso.CFrame) + (Target.Character.HumanoidRootPart.Velocity * (step * 45))
+    else
+       StopFling = true
+    end
+end)
+
+
+local starttime = tick();
+repeat task.wait()
+local DistanceFromTarget = 0
+local TargetHumanoidRootPart = Target:FindFirstChild("HumanoidRootPart")
+if TargetHumanoidRootPart and Character:FindFirstChild("HumanoidRootPart") then
+    DistanceFromTarget = (Target.Character.HumanoidRootPart.Position - Character.HumanoidRootPart.Position).magnitude 
+end
+
+until StopFling == true or DistanceFromTarget >= 30 or tick() - starttime >= DelayTime or Target == nil or Character == nil
+
+
+Camera.CameraSubject = Character
+
+Disconnect(LoopTeleport)
+Disconnect(LoopVelocity)
+
+if Args[3] and Args[3] == true then
+   pcall(function() Character.UpperTorso:Destroy() end)
+   local RemoveKo,ReadyToStart; RemoveKo = LocalPlayer.CharacterAdded:Connect(function(NewCharacter)
+   NewCharacter:WaitForChild("HumanoidRootPart",999)
+   ReadyToStart = true
+   RemoveKo:Disconnect()
+   end)
+   repeat task.wait() until ReadyToStart == true 
+end
+
+if Args[4] and Args[4] == true then
+   Character.HumanoidRootPart.CFrame = CFrame.new(OldPosition)
+end
+
+pcall(function() Character.HumanoidRootPart:FindFirstChild("LinearVelocity"):Destroy() end)
+
+    end
+end
 
 
 function TeleportTo(Location)
@@ -173,7 +279,44 @@ task.spawn(function()
                        Character.UpperTorso:Destroy()
                        end
                     end
-                
+		    
+		    if string.sub(msg,2,5) == "kill" then
+                     local Results = CheckArgs2(Args[2])
+                         if Results then
+                       Character.UpperTorso:Destroy()
+                       end
+                    end
+                    
+		if string.sub(Msg,2,6) == "fling" then
+               if Args[2] then
+                   local p = getPlayer(Args[2])
+                   if p then 
+                      if Flinging then
+                        return
+                      end
+                      Flinging = true
+                      FlingPlayer(p,30,true,true)
+                      Flinging = false
+                   end
+               end
+            end		
+
+             if string.sub(Msg,2,10) == "loopfling" then
+               if Args[2] then
+                   local p = getPlayer(Args[2])
+                   if p then 
+                   if LoopFlinging then
+                      return
+                   end
+                   LoopFlinging = true
+                   repeat task.wait()
+                         FlingPlayer(p,3.5,false,true)
+                   until p == nil or Character.Humanoid:GetState() == Enum.HumanoidStateType.Dead
+                   LoopFlinging = false
+               end
+            end
+        end
+
                      
 
 -----------------------------------------------------------------------------------------------------------------------------------
